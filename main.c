@@ -125,7 +125,7 @@ int main(int argc, char *argv[])
     users->initmysql_result(connPool);
 
     int listenfd = socket(PF_INET, SOCK_STREAM, 0);
-    assert(listenfd >= 0);
+    assert(listenfd >= 0); //检查listenfd是否大于等于 0
 
     //struct linger tmp={1,0};
     //SO_LINGER若有数据待发送，延迟关闭
