@@ -86,11 +86,12 @@ void addfd(int epollfd, int fd, bool one_shot)
 #endif
 
 #ifdef listenfdLT
-    event.events = EPOLLIN | EPOLLRDHUP;
+    event.events = EPOLLIN | EPOLLRDHUP; //EPOLLRDHUP：检测对端是否关闭连接（半关闭状态）
 #endif
-
-    if (one_shot)
-        event.events |= EPOLLONESHOT;
+    //EPOLLONESHOT 是一个事件标志，表示该文件描述符在第一次事件处理后会被禁用
+    //用于确保某个文件描述符在触发事件后只会处理一次，避免事件重复处理
+    if (one_shot) //main函数中传入该参数
+        event.events |= EPOLLONESHOT; 
     epoll_ctl(epollfd, EPOLL_CTL_ADD, fd, &event);
     setnonblocking(fd);
 }

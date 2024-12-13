@@ -146,12 +146,12 @@ int main(int argc, char *argv[])
     assert(ret >= 0);
 
     //创建内核事件表
-    epoll_event events[MAX_EVENT_NUMBER];
-    epollfd = epoll_create(5);
+    epoll_event events[MAX_EVENT_NUMBER]; //用于存储epoll事件表中就绪事件的event数组
+    epollfd = epoll_create(5); //创建监听红黑树
     assert(epollfd != -1);
 
-    addfd(epollfd, listenfd, false);
-    http_conn::m_epollfd = epollfd;
+    addfd(epollfd, listenfd, false); //将监听对端连接请求的fd挂到树上
+    http_conn::m_epollfd = epollfd; //将epollfd（即监听红黑树fd）保存到http_conn类的静态成员变量m_epollfd中
 
     //创建管道
     ret = socketpair(PF_UNIX, SOCK_STREAM, 0, pipefd);
