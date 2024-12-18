@@ -5,17 +5,17 @@
 #include <pthread.h>
 #include <semaphore.h>
 
-class sem
+class sem //信号量
 {
 public:
-    sem()
+    sem() //无参构造
     {
         if (sem_init(&m_sem, 0, 0) != 0)
         {
             throw std::exception();
         }
     }
-    sem(int num)
+    sem(int num) //有参构造
     {
         if (sem_init(&m_sem, 0, num) != 0)
         {
@@ -38,7 +38,7 @@ public:
 private:
     sem_t m_sem;
 };
-class locker
+class locker //互斥锁
 {
 public:
     locker()
@@ -68,7 +68,7 @@ public:
 private:
     pthread_mutex_t m_mutex;
 };
-class cond
+class cond //条件变量（与互斥锁配合使用）
 {
 public:
     cond()
