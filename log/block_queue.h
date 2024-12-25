@@ -17,6 +17,7 @@ template <class T>
 class block_queue
 {
 public:
+    //初始化私有成员
     block_queue(int max_size = 1000)
     {
         if (max_size <= 0)
@@ -24,6 +25,7 @@ public:
             exit(-1);
         }
 
+        //构造函数创建循环数组
         m_max_size = max_size;
         m_array = new T[max_size];
         m_size = 0;
@@ -136,6 +138,7 @@ public:
             return false;
         }
 
+        //将新增数据放在循环数组的对应位置
         m_back = (m_back + 1) % m_max_size;
         m_array[m_back] = item;
 
@@ -145,14 +148,16 @@ public:
         m_mutex.unlock();
         return true;
     }
+
     //pop时,如果当前队列没有元素,将会等待条件变量
     bool pop(T &item)
     {
 
         m_mutex.lock();
+        //多个消费者的时候，这里要是用while而不是if
         while (m_size <= 0)
         {
-            
+            //当重新抢到互斥锁，pthread_cond_wait返回为0
             if (!m_cond.wait(m_mutex.get()))
             {
                 m_mutex.unlock();
@@ -160,6 +165,7 @@ public:
             }
         }
 
+        //取出队列首的元素，这里需要理解一下，使用循环数组模拟的队列 
         m_front = (m_front + 1) % m_max_size;
         item = m_array[m_front];
         m_size--;
@@ -167,7 +173,9 @@ public:
         return true;
     }
 
-    //增加了超时处理
+    //增加了超时处理，在项目中没有使用到
+    //在pthread_cond_wait基础上增加了等待的时间，只指定时间内能抢到互斥锁即可
+    //其他逻辑不变
     bool pop(T &item, int ms_timeout)
     {
         struct timespec t = {0, 0};

@@ -49,6 +49,7 @@ private:
 class connectionRAII{
 
 public:
+	//双指针对MYSQL *con修改
 	connectionRAII(MYSQL **con, connection_pool *connPool);
 	~connectionRAII();
 	
